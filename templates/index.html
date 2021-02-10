@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css">
+    <link href="https://fonts.googleapis.com/css?family=Bangers|Happy+Monkey|Patrick+Hand+SC&display=swap|Permanent+Marker&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="{{ url_for('static',filename='style/index.css') }}">
+    <title>CSI</title>
+</head>
+<body>
+  
+  <div class="whole-container">
+    {% for i in range(results|length) %}
+    <section id="quote_{{results[i].name}}" class="quote-panel">
+        <div class="container">
+            <h2>{{results[i].quote}}</h2>
+            <div class="like">
+                <button class="like-btn" id="like_{{results[i].name}}"><h2><i id="heart_{{results[i].name}}" class="fas fa-heart heart"></i></h2></button>
+            </div>
+            <!-- <a id="{{i}}">{{results[i].name}}</a> -->
+        </div>
+    </section>
+    <!-- <script type="text/javascript">
+        function like(i){
+            console.log(i);
+            document.getElementById("heart").style.color="red";
+            document.getElementById("heart").disabled = true;
+            name=document.getElementsByClassName("user")[0].innerHTML;
+            console.log(name);
+            // window.location.replace("/likes/"+name);
+        }
+        </script> -->
+    {% endfor %}
+    <script>
+        $(document).ready(function(){
+          $('.whole-container').on('click', '.like-btn', function(){
+             var name = this.id.substring(5,this.id.lastIndex);
+             console.log(name);
+             $.ajax({
+              url: "/likes",
+              type: "get",
+              data: {name: name},
+              success: function(response) {
+                if (response.success === 'True'){
+                    document.getElementById("heart_"+name).style.color="red";
+                    console.log(name);
+                    document.getElementById("like_"+name).disabled=True;
+
+                }
+                else{
+                   alert('You already liked that post!');
+                }
+              }
+             });
+          });
+        });
+      </script>
+    
+    <style>
+        .quote-panel{
+            margin:10%;
+            padding:20px 20px;
+            background-color:#303030;
+            border-radius:20px;
+        }
+        .container{
+            display:flex;
+            justify-content:space-between;
+            flex-direction: row;
+        }
+        .container h2{
+            color:#fff;
+            font-family: Roboto,sans-serif;
+            text-align:start;
+        }
+        .container .like h2 i{
+            color:#fff;
+        }
+        .container .like h2 i :disabled{
+            color: red;
+        }
+        button{
+            background-color:#303030;
+            border:none;
+        }
+    </style>
+    <section class="quote panel" >
+      <h2 class="black" style="text-align: center;">Made with <i class="fas fa-heart heart" style="color: red;"></i> by <a>CSI</a></h2>
+    </section>
+  </div>
+</body>
+</html>
